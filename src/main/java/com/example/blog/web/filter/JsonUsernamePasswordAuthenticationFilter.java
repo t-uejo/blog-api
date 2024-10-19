@@ -1,7 +1,10 @@
 package com.example.blog.web.filter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -9,18 +12,19 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.security.web.context.SecurityContextRepository;
 
-import java.util.List;
+import java.io.IOException;
 
 public class JsonUsernamePasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     public JsonUsernamePasswordAuthenticationFilter(
             SecurityContextRepository setSecurityContextRepository,
-            SessionAuthenticationStrategy sessionAuthenticationStrategy
+            SessionAuthenticationStrategy sessionAuthenticationStrategy,
+            AuthenticationManager authenticationManager
     ){
         super();
         setSecurityContextRepository(setSecurityContextRepository);
         setSessionAuthenticationStrategy(sessionAuthenticationStrategy);
-
+        setAuthenticationManager(authenticationManager);
         setAuthenticationSuccessHandler((req, res, auth) ->{
             res.setStatus(HttpServletResponse.SC_OK);
         });
@@ -33,10 +37,25 @@ public class JsonUsernamePasswordAuthenticationFilter extends UsernamePasswordAu
     @Override
     public Authentication attemptAuthentication(
             HttpServletRequest request,
-            HttpServletResponse response) throws AuthenticationException {
-        return UsernamePasswordAuthenticationToken.authenticated(
-                "dummy-user",
-                "dummy-pass",
-                List.of());
+            HttpServletResponse response
+    ) throws AuthenticationException {
+
+        var objectMapper = new ObjectMapper();
+        LoginRequest jsonRequest;
+        try {
+            jsonRequest = objectMapper.readValue(request.getInputStream(), LoginRequest.class);
+        } catch (IOException e) {
+            throw new AuthenticationServiceException("failed to read request as json", e);
+        }
+
+        String username = (jsonRequest.username == null) ? "" : jsonRequest.username;
+        String password = (jsonRequest.password == null) ? "" : jsonRequest.password;
+
+        UsernamePasswordAuthenticationToken authRequest = UsernamePasswordAuthenticationToken.unauthenticated(username, password);
+        this.setDetails(request, authRequest);
+        return this.getAuthenticationManager().authenticate(authRequest);
+    }
+
+    private record LoginRequest(String username, String password){
     }
 }
