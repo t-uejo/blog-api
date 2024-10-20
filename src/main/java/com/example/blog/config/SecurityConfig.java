@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -54,12 +55,16 @@ public class SecurityConfig {
 
                 .securityContext(context -> context.securityContextRepository(securityContextRepository))
                 .authorizeHttpRequests((authorize) -> authorize
+                        .requestMatchers(HttpMethod.POST, "/users").permitAll()
                         .requestMatchers("/").permitAll()
                         .requestMatchers("articles/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .exceptionHandling(customizer -> customizer.accessDeniedHandler((req, res, ex) ->{
+                .exceptionHandling(customizer -> customizer.accessDeniedHandler((req, res, ex) -> {
                     res.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                }))
+                .logout(logout -> logout.logoutSuccessHandler((req, res, auth) -> {
+                    res.setStatus(HttpServletResponse.SC_OK);
                 }))
                 ;
 
