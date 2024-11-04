@@ -32,7 +32,6 @@ public class JsonUsernamePasswordAuthenticationFilter extends UsernamePasswordAu
         setAuthenticationSuccessHandler((req, res, auth) ->{
             res.setStatus(HttpServletResponse.SC_OK);
         });
-
         setAuthenticationFailureHandler((req, res, auth) ->{
             res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         });

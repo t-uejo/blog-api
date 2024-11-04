@@ -8,8 +8,8 @@ services:
     environment:
       MYSQL_DATABASE: apidb
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_USER: itsuser
+      MYSQL_PASSWORD: itspass
     ports:
       - "3306:3306"
 
