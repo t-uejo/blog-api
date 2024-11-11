@@ -55,8 +55,8 @@ public class SecurityConfig {
 
                 .securityContext(context -> context.securityContextRepository(securityContextRepository))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.POST, "/users").permitAll()
                         .requestMatchers("/").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/users").permitAll()
                         .requestMatchers("articles/**").permitAll()
                         .anyRequest().authenticated()
                 )

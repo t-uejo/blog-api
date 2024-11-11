@@ -1,9 +1,6 @@
 package com.example.blog.repository.user;
 
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.Optional;
 
@@ -28,4 +25,9 @@ public interface UserRepository {
                 @Param("password") String password,
                 @Param("enabled") boolean enabled
     );
+
+    @Delete("""
+            DELETE FROM users WHERE username = #{username}
+            """)
+    void deleteByUsername(@Param("username") String username);
 }
