@@ -39,6 +39,14 @@ public class RegistrationAndLoginIT {
     public void integrationTest(){
         var xsrfToken = getRoot();
         register(xsrfToken);
+
+        //ログイン失敗
+        //CookieにXSRF-TOKENがない
+        loginFailure_NoXSRFTokenInCookie(xsrfToken);
+        //リクエストヘッダーにX-XSRF-TOKENがない
+        loginFailure_NoXXSRFTokenInHeader(xsrfToken);
+
+        //ログイン成功
         loginSuccess(xsrfToken);
     }
 
@@ -67,7 +75,7 @@ public class RegistrationAndLoginIT {
 
     /**
      * ユーザ登録
-     * @param xsrfToken
+     * @param xsrfToken XSRF-TOKEN
      */
     private void register(String xsrfToken) {
         //Arrange
@@ -94,7 +102,7 @@ public class RegistrationAndLoginIT {
 
     /**
      * ログイン成功
-     * @param xsrfToken
+     * @param xsrfToken XSRF-TOKEN
      */
     private void loginSuccess(String xsrfToken) {
         //Arrange
@@ -127,5 +135,65 @@ public class RegistrationAndLoginIT {
                                 //リクエストのJSESSIONIDと異なることを確認（セッション固定化攻撃対策確認用）
                                 .isNotEqualTo(DUMMY_SESSION_ID)
                 );
+    }
+
+    /**
+     * ログイン失敗（CookieにXSRF-TOKENがない）
+     * @param xsrfToken XSRF-TOKEN
+     */
+    private void loginFailure_NoXSRFTokenInCookie(String xsrfToken) {
+        //Arrange
+        String bodyJson = String.format(
+                """
+                {
+                    "username": "%s",
+                    "password": "%s"
+                }
+                """, TEST_USERNAME, TEST_PASSWORD);
+
+        //Act
+        var responseSpec = webTestClient
+                .post().uri("login")
+                .contentType(MediaType.APPLICATION_JSON)
+                /*
+                .cookie("XSRF-TOKEN", xsrfToken)
+                */
+                .cookie("JSESSIONID", DUMMY_SESSION_ID)
+                .header("X-XSRF-TOKEN", xsrfToken)
+                .bodyValue(bodyJson)
+                .exchange();
+
+        //Assert
+        responseSpec.expectStatus().isForbidden();
+    }
+
+    /**
+     * ログイン失敗（リクエストヘッダーにX-XSRF-TOKENがない）
+     * @param xsrfToken XSRF-TOKEN
+     */
+    private void loginFailure_NoXXSRFTokenInHeader(String xsrfToken) {
+        //Arrange
+        String bodyJson = String.format(
+                """
+                {
+                    "username": "%s",
+                    "password": "%s"
+                }
+                """, TEST_USERNAME, TEST_PASSWORD);
+
+        //Act
+        var responseSpec = webTestClient
+                .post().uri("login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .cookie("XSRF-TOKEN", xsrfToken)
+                .cookie("JSESSIONID", DUMMY_SESSION_ID)
+                /*
+                .header("X-XSRF-TOKEN", xsrfToken)
+                */
+                .bodyValue(bodyJson)
+                .exchange();
+
+        //Assert
+        responseSpec.expectStatus().isForbidden();
     }
 }
