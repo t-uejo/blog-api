@@ -45,6 +45,12 @@ public class RegistrationAndLoginIT {
         loginFailure_NoXSRFTokenInCookie(xsrfToken);
         //リクエストヘッダーにX-XSRF-TOKENがない
         loginFailure_NoXXSRFTokenInHeader(xsrfToken);
+        //トークン値が異なる
+        loginFailure_DifferentToken(xsrfToken);
+        //ユーザが存在しない
+        loginFailure_GivenUsernameDoneNotExistInDatabase(xsrfToken);
+        //パスワード間違い
+        loginFailure_GivenPasswordIsNotSameAsPasswordInDatabase(xsrfToken);
 
         //ログイン成功
         loginSuccess(xsrfToken);
@@ -195,5 +201,89 @@ public class RegistrationAndLoginIT {
 
         //Assert
         responseSpec.expectStatus().isForbidden();
+    }
+
+    /**
+     * ログイン失敗（Cookieとリクエストヘッダーのトークン値が異なる）
+     * @param xsrfToken XSRF-TOKEN
+     */
+    private void loginFailure_DifferentToken(String xsrfToken) {
+        //Arrange
+        String bodyJson = String.format(
+                """
+                {
+                    "username": "%s",
+                    "password": "%s"
+                }
+                """, TEST_USERNAME, TEST_PASSWORD);
+
+        //Act
+        var responseSpec = webTestClient
+                .post().uri("login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .cookie("XSRF-TOKEN", xsrfToken)
+                .cookie("JSESSIONID", DUMMY_SESSION_ID)
+                .header("X-XSRF-TOKEN", xsrfToken + "_invalid")
+                .bodyValue(bodyJson)
+                .exchange();
+
+        //Assert
+        responseSpec.expectStatus().isForbidden();
+    }
+
+    /**
+     * ログイン失敗（データベースにユーザが存在しない）
+     * @param xsrfToken XSRF-TOKEN
+     */
+    private void loginFailure_GivenUsernameDoneNotExistInDatabase(String xsrfToken) {
+        //Arrange
+        String bodyJson = String.format(
+                """
+                {
+                    "username": "%s",
+                    "password": "%s"
+                }
+                """, TEST_USERNAME + "_invalid", TEST_PASSWORD);
+
+        //Act
+        var responseSpec = webTestClient
+                .post().uri("login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .cookie("XSRF-TOKEN", xsrfToken)
+                .cookie("JSESSIONID", DUMMY_SESSION_ID)
+                .header("X-XSRF-TOKEN", xsrfToken)
+                .bodyValue(bodyJson)
+                .exchange();
+
+        //Assert
+        responseSpec.expectStatus().isUnauthorized();
+    }
+
+    /**
+     * ログイン失敗（パスワード間違い）
+     * @param xsrfToken XSRF-TOKEN
+     */
+    private void loginFailure_GivenPasswordIsNotSameAsPasswordInDatabase(String xsrfToken) {
+        //Arrange
+        String bodyJson = String.format(
+                """
+                {
+                    "username": "%s",
+                    "password": "%s"
+                }
+                """, TEST_USERNAME, TEST_PASSWORD + "_invalid");
+
+        //Act
+        var responseSpec = webTestClient
+                .post().uri("login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .cookie("XSRF-TOKEN", xsrfToken)
+                .cookie("JSESSIONID", DUMMY_SESSION_ID)
+                .header("X-XSRF-TOKEN", xsrfToken)
+                .bodyValue(bodyJson)
+                .exchange();
+
+        //Assert
+        responseSpec.expectStatus().isUnauthorized();
     }
 }
