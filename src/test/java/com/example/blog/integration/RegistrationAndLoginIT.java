@@ -1,4 +1,4 @@
-package com.example.blog.it;
+package com.example.blog.integration;
 
 import com.example.blog.service.user.UserService;
 import org.junit.jupiter.api.AfterEach;
