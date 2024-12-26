@@ -1,21 +1,21 @@
-package com.example.blog.repository.article;
+package com.example.blog.service.article;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-@MybatisTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class ArticleRepositoryTest {
+@SpringBootTest
+@Transactional
+class ArticleServiceMockTest {
 
     @Autowired
-    private ArticleRepository sut;
+    ArticleService sut;
 
     @Test
     void sut() {
@@ -23,15 +23,15 @@ class ArticleRepositoryTest {
     }
 
     @Test
-    @DisplayName("selectById: 指定されたIDの記事が存在するとき、ArticleEntityを返す")
+    @DisplayName("findById: 指定されたIDの記事が存在するとき、ArticleEntityを返す")
     @Sql(statements = {
             """
             INSERT INTO articles (id, title, body, created_at, updated_at)
             VALUES (999, 'title_999', 'body_999', '2024-01-01 00:00:00', '2024-01-01 00:00:00');
             """
     })
-    void selectById_returnArticleEntity(){
-        var actual = sut.selectById(999);
+    void findById_returnArticleEntity(){
+        var actual = sut.findById(999);
 
         assertThat(actual)
                 .isPresent()
@@ -46,9 +46,9 @@ class ArticleRepositoryTest {
     }
 
     @Test
-    @DisplayName("selectById: 指定されたIDの記事が存在しないとき、Optional.emptyを返す")
-    void selectById_returnEmpty(){
-        var actual = sut.selectById(-999);
+    @DisplayName("findById: 指定されたIDの記事が存在しないとき、Optional.emptyを返す")
+    void findById_returnEmpty(){
+        var actual = sut.findById(-999);
 
         assertThat(actual).isEmpty();
     }
