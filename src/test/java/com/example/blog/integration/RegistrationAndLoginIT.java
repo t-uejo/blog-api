@@ -16,9 +16,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class RegistrationAndLoginIT {
 
-    private final static String TEST_USERNAME = "user1";
-    private final static String TEST_PASSWORD = "password1";
-    private final static String DUMMY_SESSION_ID = "session_id_1";
+    private final static String TEST_USERNAME = "user99";
+    private final static String TEST_PASSWORD = "password99";
+    private final static String DUMMY_SESSION_ID = "session_id_99";
     private static final String SESSION_COOKIE_NAME = "SESSION";
 
     @Autowired
@@ -38,7 +38,10 @@ public class RegistrationAndLoginIT {
 
     @Test
     public void integrationTest(){
+        //ルートエンドポイント
         var xsrfToken = getRoot();
+
+        //ユーザ登録
         register(xsrfToken);
 
         //ログイン失敗
