@@ -3,15 +3,16 @@ buildscript {
 		mavenCentral()
 	}
 	dependencies {
-		classpath "org.flywaydb:flyway-mysql:10.17.3"
+		classpath "org.flywaydb:flyway-mysql:11.1.1"
 	}
 }
 
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '3.2.3'
-	id 'io.spring.dependency-management' version '1.1.4'
-	id "org.flywaydb.flyway" version "10.17.3"
+	id 'org.springframework.boot' version '3.4.1'
+	id 'io.spring.dependency-management' version '1.1.7'
+	id "org.flywaydb.flyway" version "11.1.1"
+	id "com.github.ben-manes.versions" version "0.51.0"
 }
 
 group = 'com.example'
@@ -33,7 +34,7 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
+	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4'
 	implementation "org.springframework.boot:spring-boot-starter-security"
 	implementation 'org.springframework.session:spring-session-data-redis'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
@@ -41,7 +42,7 @@ dependencies {
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.3'
+	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework:spring-webflux'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
