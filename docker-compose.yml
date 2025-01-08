@@ -5,9 +5,9 @@ services:
     restart: always
     environment:
       MYSQL_DATABASE: apidb
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_USER: itsuser
-      MYSQL_PASSWORD: itspass
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: apiuser
+      MYSQL_PASSWORD: apipass
     ports:
       - "3306:3306"
 
