@@ -1,5 +1,6 @@
 package com.example.blog.web.controller.user;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -27,6 +28,7 @@ class UserRestControllerTest {
     }
 
     @Test
+    @DisplayName("/users/me: ログイン済みユーザがアクセスすると、200 OKでユーザ名を返す")
     @WithMockUser(username = MOCK_USERNAME)
     void usersMe_return200() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/users/me"))
@@ -35,6 +37,7 @@ class UserRestControllerTest {
     }
 
     @Test
+    @DisplayName("/users/me: 未ログインの場合、403 Forbiddenを返す")
     void usersMe_return403() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/users/me"))
                 .andExpect(status().isForbidden());
