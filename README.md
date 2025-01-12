@@ -5,6 +5,7 @@ Spring Framework を使用した RESTful API サービス
 - 言語: Java 21
 - フレームワーク: Spring Boot 3.x
 - データベース: MySQL 8.1
+- キャッシュサーバ: Redis 7.2
 - ビルドツール: Gradle
 - テスト: JUnit、Mockito
 - ドキュメント: OpenAPI/Swagger による API ドキュメント
@@ -19,6 +20,10 @@ Spring Framework を使用した RESTful API サービス
     ```shell
     ./gradlew flywayMigrate
     ```
+   > [!NOTE]
+   > それぞれbuild.gradleにて以下のように定義している。
+   > - テーブル定義：`src/main/resources/db/migration`
+   > - ローカル開発用のサンプルデータ：`src/main/resources/db/migration_dev`
 
 3. アプリケーションの起動
     ```shell
