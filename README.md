@@ -21,7 +21,7 @@ docker compose up -d
 ./gradlew flywayMigrate
 ```
 > [!NOTE]
-> それぞれMigrationファイルは以下に配置。build.gradleにて定義。
+> それぞれMigrationファイルは以下に配置。build.gradleに定義。
 > - テーブル定義：`src/main/resources/db/migration`
 > - ローカル開発用のサンプルデータ：`src/main/resources/db/migration_dev`
 
