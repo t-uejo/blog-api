@@ -39,7 +39,7 @@ public class RegistrationAndLoginIT {
     @Test
     public void integrationTest(){
         //ルートエンドポイント
-        var xsrfToken = getRoot();
+        var xsrfToken = getCsrfCookie();
 
         //ユーザ登録
         register(xsrfToken);
@@ -64,8 +64,8 @@ public class RegistrationAndLoginIT {
      * ルートエンドポイントへリクエスト
      * @return XSRF-TOKENのValue値
      */
-    private String getRoot() {
-        var responseSpec = webTestClient.get().uri("/").exchange();
+    private String getCsrfCookie() {
+        var responseSpec = webTestClient.get().uri("/csrf-cookie").exchange();
         var response = responseSpec.returnResult(String.class);
         //CookieのXSRF-TOKENを取得
         var xsrfTokenOpt = Optional.ofNullable(response.getResponseCookies().getFirst("XSRF-TOKEN"));
