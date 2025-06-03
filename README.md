@@ -9,6 +9,7 @@ Spring Framework を使用した RESTful API サービス
 - ビルドツール: Gradle
 - テスト: JUnit、Mockito
 - ドキュメント: OpenAPI/Swagger による API ドキュメント
+- API仕様書: OpenAPI 3.0.3 による自動生成ドキュメント
 
 ## Setup
 1. Dockerコンテナを起動
@@ -25,7 +26,12 @@ docker compose up -d
 > - テーブル定義：`src/main/resources/db/migration`
 > - ローカル開発用のサンプルデータ：`src/main/resources/db/migration_dev`
 
-3. アプリケーションの起動
+3. テストの実施
+```shell
+./gradlew test
+```
+
+4. アプリケーションの起動
 ```shell
 ./gradlew bootRun 
 ```
