@@ -177,6 +177,6 @@ components:
       description: >
         CSRF 対策に利用する Cookie。
         XSRF-TOKEN Cookie は、`GET csrf-cookie` で取得できます。
-      type: apikey
+      type: apiKey
       in: cookie
       name: XSRF-TOKEN
